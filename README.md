@@ -2,7 +2,7 @@
 Este aplicativo foi feito para procurar atividades que fecharão no dia atual no calendário do Moodle e mandar uma mensagem caso exista alguma.
 ## Instalação
 * Instale o python
-* Instale as bibliotecas necessárias
+* Instale as bibliotecas necessárias  
 `pip install datetime`  
 `pip install requests`  
 `pip install beautifulsoup4`  
