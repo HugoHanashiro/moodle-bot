@@ -24,15 +24,12 @@ def login_moodle(username, password):
     return session
 
 
-def get_activities_today(session):
-    
-    today = datetime.today().day
-    
+def get_activities(session, day = datetime.today().day):
     calendar_url = "https://moodle.sptech.school/calendar/view.php?view=month"
     response = session.get(calendar_url)
     soup = BeautifulSoup(response.content, 'html.parser')
     
-    a_tag = soup.find('a', {'data-day': str(today)})
+    a_tag = soup.find('a', {'data-day': str(day)}, string=day)
     div_parent = a_tag.parent
     elementos_eventos = div_parent.find_all('span', {'class': 'eventname'})
     events_list = []
@@ -49,7 +46,7 @@ def get_activities_today(session):
 username = credentials.USERNAME
 password = credentials.PASSWORD
 session = login_moodle(username, password)
-activities = get_activities_today(session)
+activities = get_activities(session)
 if activities:
     print("Atenção!! As seguintes atividades serão fechadas hoje:")
     for activity in activities:
