@@ -26,7 +26,7 @@ class MyClient(discord.Client):
     async def my_background_task(self):
         current_time = dt.now()
 
-        time_to_compare = "10:30"
+        time_to_compare = "17:32"
 
         hour_to_compare, minute_to_compare = map(int, time_to_compare.split(':'))
 
@@ -38,10 +38,16 @@ class MyClient(discord.Client):
             username = credentials.USERNAME
             password = credentials.PASSWORD
             session = moodle_interaction.login_moodle(username, password)
-            activities = moodle_interaction.get_activities(session)
-            if activities:
+            activities_today = moodle_interaction.get_activities(session)
+            activities_tomorrow = moodle_interaction.get_activities(session, dt.today().day + 1)
+            if activities_today:
                 message += "@everyone Atenção!! As seguintes atividades serão fechadas hoje:\n"
-                for activity in activities:
+                for activity in activities_today:
+                    message += activity + "\n"
+                if(len(message) == 0):
+                    message += "@everyone Bom dia! "
+                message += "As seguintes atividades serão fechadas amanhã:\n"
+                for activity in activities_tomorrow:
                     message += activity + "\n"
             else:
                 message += "Nenhuma atividade será fechada hoje :)"
