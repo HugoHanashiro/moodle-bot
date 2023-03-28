@@ -2,6 +2,8 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 import credentials
+from days import day
+
 
 def login_moodle(username, password):
     login_url = "https://moodle.sptech.school/login/index.php"
@@ -24,32 +26,41 @@ def login_moodle(username, password):
     return session
 
 
-def get_activities(session, day = datetime.today().day):
-    calendar_url = "https://moodle.sptech.school/calendar/view.php?view=month"
+def get_activities(session, dayParam = day.HOJE):
+    calendar_url = "https://moodle.sptech.school/calendar/view.php?view=upcoming"
     response = session.get(calendar_url)
     soup = BeautifulSoup(response.content, 'html.parser')
     
-    a_tag = soup.find('a', {'data-day': str(day)}, string=day)
-    div_parent = a_tag.parent
-    elementos_eventos = div_parent.find_all('span', {'class': 'eventname'})
     events_list = []
-    for evento in elementos_eventos:
-        events_list.append(evento.text)
-
-    for i in range(len(events_list)):
-        events_list[i] = events_list[i][:-31]
-
+    # a_tag = soup.find('div', {'data-day': str(day)}, string=day)
+    elementos_eventos = soup.find_all('div', {'data-type': 'event'})
+    for elemento in elementos_eventos:
+        # print(elemento.prettify())
+        description_element = elemento.find('div', class_={'description', 'card-body'})
+        rows_inside_description = description_element.find_all('div', class_="row")
+        last_row = rows_inside_description[-1]
+        last_column = last_row.find_all('div')[-1]
+        course = last_column.find('a').text[8:-7]
+        if (elemento.find('a', string='Hoje') and dayParam == day.HOJE) or (elemento.find('a', string='Amanhã') and dayParam == day.AMANHA):
+            activity_name = elemento.get("data-event-title")[:-31]
+            events_list.append({"activity": activity_name, "course": course})
+            
     return events_list
 
 
 # Exemplo
+# username = credentials.USERNAME
+# password = credentials.PASSWORD
+# session = login_moodle(username, password)
+# activities = get_activities(session)
+# if activities:
+#     print("Atenção!! As seguintes atividades serão fechadas hoje:")
+#     for activity in activities:
+#         print(activity)
+# else:
+#     print("Nenhuma atividade será fechada hoje :)")
+
 username = credentials.USERNAME
 password = credentials.PASSWORD
 session = login_moodle(username, password)
-activities = get_activities(session)
-if activities:
-    print("Atenção!! As seguintes atividades serão fechadas hoje:")
-    for activity in activities:
-        print(activity)
-else:
-    print("Nenhuma atividade será fechada hoje :)")
+get_activities(session)
