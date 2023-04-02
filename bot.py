@@ -6,6 +6,7 @@ import moodle_interaction
 from datetime import datetime as dt
 from datetime import date
 import time
+from days import day
 
 class MyClient(discord.Client):
     def __init__(self, *args, **kwargs):
@@ -26,7 +27,7 @@ class MyClient(discord.Client):
     async def my_background_task(self):
         current_time = dt.now()
 
-        time_to_compare = "01:22"
+        time_to_compare = "02:03"
 
         hour_to_compare, minute_to_compare = map(int, time_to_compare.split(':'))
 
@@ -39,7 +40,7 @@ class MyClient(discord.Client):
             password = credentials.PASSWORD
             session = moodle_interaction.login_moodle(username, password)
             activities_today = moodle_interaction.get_activities(session)
-            # activities_tomorrow = moodle_interaction.get_activities(session, dt.today().day + 1)
+            activities_tomorrow = moodle_interaction.get_activities(session, day.AMANHA)
 
             if activities_today:
                 message += "@everyone \n**Atenção!!** As seguintes atividades serão fechadas **hoje**:\n"
@@ -48,15 +49,14 @@ class MyClient(discord.Client):
             else:
                 message += "Nenhuma atividade será fechada hoje\n"
 
-            # EM CONSTRUÇÃO
-            # if activities_tomorrow:
-            #     if(len(message) == 0):
-            #         message += "@everyone Bom dia! "
-            #     message += "As seguintes atividades serão fechadas amanhã:\n"
-            #     for activity in activities_tomorrow:
-            #         message += activity + "\n"
-            # else:
-            #     message += "Nenhuma atividade será fechada amanhã"
+            if activities_tomorrow:
+                if "@everyone" not in message:
+                    message += "@everyone Bom dia!\n"
+                message += "As seguintes atividades serão fechadas amanhã:\n"
+                for dict in activities_tomorrow:
+                    message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n"
+            else:
+                message += "Nenhuma atividade será fechada amanhã"
 
             await channel.send(message)
             
