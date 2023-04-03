@@ -1,3 +1,5 @@
 credentials.py
 __pycache__/
 teste.py
+Dockerfile
+fly.toml
