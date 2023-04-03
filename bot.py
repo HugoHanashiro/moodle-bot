@@ -42,17 +42,18 @@ class MyClient(discord.Client):
             activities_today = moodle_interaction.get_activities(session)
             activities_tomorrow = moodle_interaction.get_activities(session, day.AMANHA)
 
+            if activities_today or activities_tomorrow:
+                message += "@everyone Bom dia!\n"
+
             if activities_today:
-                message += "@everyone \n**Atenção!!** As seguintes atividades serão fechadas **hoje**:\n"
+                message += "**Atenção!!** As seguintes atividades serão fechadas **hoje**:\n"
                 for dict in activities_today:
                     message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n"
             else:
                 message += "Nenhuma atividade será fechada hoje\n"
 
             if activities_tomorrow:
-                if "@everyone" not in message:
-                    message += "@everyone Bom dia!\n"
-                message += "As seguintes atividades serão fechadas amanhã:\n"
+                message += "As seguintes atividades serão fechadas **amanhã:**\n"
                 for dict in activities_tomorrow:
                     message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n"
             else:
