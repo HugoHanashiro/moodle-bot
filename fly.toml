@@ -1,0 +1,8 @@
+# fly.toml file generated for sptech-moodle-bot on 2023-04-02T22:00:48-03:00
+
+app = "sptech-moodle-bot"
+kill_signal = "SIGINT"
+kill_timeout = 5
+mounts = []
+primary_region = "gru"
+processes = []
