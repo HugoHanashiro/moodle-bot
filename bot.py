@@ -27,7 +27,7 @@ class MyClient(discord.Client):
     async def my_background_task(self):
         current_time = dt.now()
 
-        time_to_compare = "13:00"
+        time_to_compare = "23:58"
 
         hour_to_compare, minute_to_compare = map(int, time_to_compare.split(':'))
 
@@ -53,11 +53,21 @@ class MyClient(discord.Client):
                 message += "Nenhuma atividade será fechada hoje\n"
 
             if activities_tomorrow:
+                message += "##################################################\n"
                 message += "As seguintes atividades serão fechadas **amanhã:**\n"
                 for dict in activities_tomorrow:
                     message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n"
             else:
                 message += "Nenhuma atividade será fechada amanhã"
+
+            # weekday = dt.today().weekday()
+            weekday = 4
+            if weekday == 4:
+                all_activities = moodle_interaction.get_all_activities(session)
+                message += "##################################################\n"
+                message += "SEXTOU! Vai descansar. Mas se quiser adiantar as atividades da semana, essas são as próximas atividades:\n"
+                for dict in all_activities:
+                    message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n        → **Término:** " + dict['date'] + "\n"
 
             await channel.send(message)
             
