@@ -27,7 +27,7 @@ class MyClient(discord.Client):
     async def my_background_task(self):
         current_time = dt.now()
 
-        time_to_compare = "23:58"
+        time_to_compare = "13:00"
 
         hour_to_compare, minute_to_compare = map(int, time_to_compare.split(':'))
 
@@ -60,8 +60,7 @@ class MyClient(discord.Client):
             else:
                 message += "Nenhuma atividade será fechada amanhã"
 
-            # weekday = dt.today().weekday()
-            weekday = 4
+            weekday = dt.today().weekday()
             if weekday == 4:
                 all_activities = moodle_interaction.get_all_activities(session)
                 message += "##################################################\n"
