@@ -52,8 +52,9 @@ class MyClient(discord.Client):
             else:
                 message += "Nenhuma atividade será fechada hoje\n"
 
+            message += "------------------------------------------------\n"
+
             if activities_tomorrow:
-                message += "##################################################\n"
                 message += "As seguintes atividades serão fechadas **amanhã:**\n"
                 for dict in activities_tomorrow:
                     message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n"
@@ -63,7 +64,7 @@ class MyClient(discord.Client):
             weekday = dt.today().weekday()
             if weekday == 4:
                 all_activities = moodle_interaction.get_all_activities(session)
-                message += "##################################################\n"
+                message += "------------------------------------------------\n"
                 message += "SEXTOU! Vai descansar. Mas se quiser adiantar as atividades da semana, essas são as próximas atividades:\n"
                 for dict in all_activities:
                     message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n        → **Término:** " + dict['date'] + "\n"
