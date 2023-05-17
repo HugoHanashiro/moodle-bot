@@ -27,7 +27,7 @@ class MyClient(discord.Client):
     async def my_background_task(self):
         current_time = dt.now()
 
-        time_to_compare = "13:00"
+        time_to_compare = "13:20"
 
         hour_to_compare, minute_to_compare = map(int, time_to_compare.split(':'))
 
