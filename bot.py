@@ -39,10 +39,12 @@ class MyClient(discord.Client):
             username = credentials.USERNAME
             password = credentials.PASSWORD
             session = moodle_interaction.login_moodle(username, password)
+
+            weekday = dt.today().weekday()
             activities_today = moodle_interaction.get_activities(session)
             activities_tomorrow = moodle_interaction.get_activities(session, day.AMANHA)
 
-            if activities_today or activities_tomorrow:
+            if activities_today or activities_tomorrow or weekday == 4:
                 message += "@everyone Bom dia!\n"
 
             if activities_today:
@@ -59,13 +61,12 @@ class MyClient(discord.Client):
                 for dict in activities_tomorrow:
                     message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n"
             else:
-                message += "Nenhuma atividade será fechada amanhã"
+                message += "Nenhuma atividade será fechada amanhã\n"
 
-            weekday = dt.today().weekday()
             if weekday == 4:
                 all_activities = moodle_interaction.get_all_activities(session)
                 message += "------------------------------------------------\n"
-                message += "SEXTOU! Vai descansar. Mas se quiser adiantar as atividades da semana, essas são as próximas atividades:\n"
+                message += "SEXTOU! Vai descansar. Mas se quiser adiantar as próximas atividades, elas são as seguintes:\n"
                 for dict in all_activities:
                     message += "    • **Atividade:** " + dict['activity'] + "\n        → **Disciplina:** " + dict['course'] + "\n        → **Término:** " + dict['date'] + "\n"
 
